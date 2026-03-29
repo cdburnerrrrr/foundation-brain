@@ -11,7 +11,7 @@ app.use(express.json());
  * QUESTIONS (sample structure)
  * We'll expand this later with your full system
  */
-const questions = [
+
   {
     key: 'vehicleDebt',
     question: 'What is your vehicle situation?',
