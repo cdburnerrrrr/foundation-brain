@@ -7,56 +7,6 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-/**
- * QUESTIONS (sample structure)
- * We'll expand this later with your full system
- */
-
-  {
-    key: 'vehicleDebt',
-    question: 'What is your vehicle situation?',
-    type: 'single',
-    options: ['own', 'loan', 'lease']
-  },
-  {
-    key: 'carLoanBalance',
-    question: 'What is your car loan balance?',
-    type: 'number',
-    conditions: [
-      { key: 'vehicleDebt', operator: 'equals', value: 'loan' }
-    ]
-  },
-  {
-    key: 'leasePayment',
-    question: 'What is your monthly lease payment?',
-    type: 'number',
-    conditions: [
-      { key: 'vehicleDebt', operator: 'equals', value: 'lease' }
-    ]
-  },
-  {
-    key: 'savingConsistency',
-    question: 'Are you currently saving money each month?',
-    type: 'single',
-    options: ['yes_consistently', 'yes_irregularly', 'not_currently']
-  },
-  {
-    key: 'monthlySavingsContribution',
-    question: 'How much do you save each month?',
-    type: 'number',
-    conditions: [
-      {
-        key: 'savingConsistency',
-        operator: 'in',
-        value: ['yes_consistently', 'yes_irregularly']
-      }
-    ]
-  }
-];
-
-/**
- * CONDITION ENGINE
- */
 function shouldAsk(question, answers) {
   if (!question.conditions || question.conditions.length === 0) return true;
 
@@ -66,21 +16,28 @@ function shouldAsk(question, answers) {
     switch (cond.operator) {
       case 'equals':
         return actual === cond.value;
+
       case 'not_equals':
         return actual !== cond.value;
+
       case 'in':
         return Array.isArray(cond.value) && cond.value.includes(actual);
+
       case 'not_in':
         return Array.isArray(cond.value) && !cond.value.includes(actual);
+
+      case 'includes':
+        return Array.isArray(actual) && actual.includes(cond.value);
+
+      case 'not_includes':
+        return Array.isArray(actual) && !actual.includes(cond.value);
+
       default:
         return true;
     }
   });
 }
 
-/**
- * NEXT QUESTION LOGIC
- */
 function getNextQuestionIndex(questions, answers, currentIndex) {
   for (let i = currentIndex + 1; i < questions.length; i++) {
     if (shouldAsk(questions[i], answers)) {
@@ -90,9 +47,6 @@ function getNextQuestionIndex(questions, answers, currentIndex) {
   return null;
 }
 
-/**
- * ROUTES
- */
 app.get('/', (req, res) => {
   res.send('Foundation Brain is running');
 });
@@ -113,9 +67,6 @@ app.post('/next-question', (req, res) => {
   });
 });
 
-/**
- * START SERVER (RENDER COMPATIBLE)
- */
 const PORT = process.env.PORT || 4000;
 
 app.listen(PORT, () => {
