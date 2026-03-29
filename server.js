@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const questions = require('./questions');
+const { scoreAssessment } = require('./scoring');
 
 const app = express();
 
@@ -65,6 +66,15 @@ app.post('/next-question', (req, res) => {
     index: nextIndex,
     question: questions[nextIndex]
   });
+});
+
+
+app.post('/calculate-score', (req, res) => {
+  const { answers = {} } = req.body;
+
+  const results = scoreAssessment(answers);
+
+  return res.json(results);
 });
 
 const PORT = process.env.PORT || 4000;
