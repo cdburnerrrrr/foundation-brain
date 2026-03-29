@@ -369,38 +369,38 @@ function getStrengths(pillars) {
     }));
 }
 
-function getPriorities(pillars) {
-  const priorities = [];
+function getTopFocusAreas(pillars) {
+  const focusAreas = [];
 
   if (pillars.debt < 60) {
-    priorities.push('Reduce debt pressure to free up cash flow and flexibility.');
+    focusAreas.push('Reduce debt pressure to free up cash flow and flexibility.');
   }
 
   if (pillars.spending < 60) {
-    priorities.push('Improve spending clarity and reduce money leaks.');
+    focusAreas.push('Improve spending clarity and reduce money leaks.');
   }
 
   if (pillars.saving < 60) {
-    priorities.push('Build a stronger savings habit and emergency buffer.');
+    focusAreas.push('Build a stronger savings habit and emergency buffer.');
   }
 
   if (pillars.investing < 60) {
-    priorities.push('Strengthen long-term investing consistency.');
+    focusAreas.push('Strengthen long-term investing consistency.');
   }
 
   if (pillars.protection < 60) {
-    priorities.push('Close protection gaps before they become financial setbacks.');
+    focusAreas.push('Close protection gaps before they become financial setbacks.');
   }
 
   if (pillars.income < 60) {
-    priorities.push('Increase income stability and growth capacity.');
+    focusAreas.push('Increase income stability and growth capacity.');
   }
 
   if (pillars.vision < 60) {
-    priorities.push('Clarify your financial direction so your decisions support a real destination.');
+    focusAreas.push('Clarify your financial direction so your decisions support a real destination.');
   }
 
-  return priorities.slice(0, 3);
+  return focusAreas.slice(0, 3);
 }
 
 function getInsights(pillars, answers) {
@@ -433,6 +433,52 @@ function getInsights(pillars, answers) {
   return insights.slice(0, 3);
 }
 
+function buildSummary(foundationScore, scoreBand, pillars) {
+  const sorted = Object.entries(pillars).sort((a, b) => a[1] - b[1]);
+  const weakest = sorted[0][0];
+  const strongest = sorted[sorted.length - 1][0];
+
+  const labels = {
+    income: 'income',
+    spending: 'spending',
+    saving: 'saving',
+    investing: 'investing',
+    debt: 'debt',
+    protection: 'protection',
+    vision: 'vision'
+  };
+
+  return `Your Foundation Score is ${foundationScore}, which puts you in the "${scoreBand}" range. Your strongest area right now is ${labels[strongest]}, while your biggest opportunity is ${labels[weakest]}. Improving your weakest block first will give you the fastest lift to your overall foundation.`;
+}
+
+function buildNextStep(pillars, answers) {
+  if (pillars.spending < 60 && answers.threeMonthReview === 'no') {
+    return 'Start with a 3-month spending review to identify money leaks and free up cash flow.';
+  }
+
+  if (pillars.debt < 60) {
+    return 'List every debt, minimum payment, and interest rate, then identify which balance is costing you the most in interest.';
+  }
+
+  if (pillars.saving < 60) {
+    return 'Set up or increase one automatic transfer into savings so progress happens without relying on willpower.';
+  }
+
+  if (pillars.investing < 60) {
+    return 'Review your retirement contributions and make sure you are at least capturing any available employer match.';
+  }
+
+  if (pillars.protection < 60) {
+    return 'Review your core protection areas — health, disability, property, and life insurance if others depend on your income.';
+  }
+
+  if (pillars.vision < 60) {
+    return 'Write down what financial freedom actually looks like for you, including when you want it and what life it should support.';
+  }
+
+  return 'Keep strengthening your lowest pillar first. Small improvements in the weakest block usually create the biggest overall lift.';
+}
+
 function scoreAssessment(answers) {
   const pillars = {
     income: scoreIncome(answers),
@@ -447,16 +493,20 @@ function scoreAssessment(answers) {
   const foundationScore = calculateFoundationScore(pillars);
   const scoreBand = getScoreBand(foundationScore);
   const strengths = getStrengths(pillars);
-  const priorities = getPriorities(pillars);
+  const topFocusAreas = getTopFocusAreas(pillars);
   const insights = getInsights(pillars, answers);
+  const summary = buildSummary(foundationScore, scoreBand, pillars);
+  const nextStep = buildNextStep(pillars, answers);
 
   return {
     foundationScore,
     scoreBand,
     pillars,
     strengths,
-    priorities,
-    insights
+    topFocusAreas,
+    insights,
+    summary,
+    nextStep
   };
 }
 
