@@ -1,11 +1,11 @@
 const WEIGHTS = {
-  income: 15,
-  spending: 15,
-  saving: 15,
-  investing: 15,
-  debt: 15,
-  protection: 12.5,
-  vision: 12.5
+  income: 0.15,
+  spending: 0.15,
+  saving: 0.20,
+  investing: 0.15,
+  debt: 0.15,
+  protection: 0.10,
+  vision: 0.10
 };
 
 function clamp(value, min = 0, max = 100) {
@@ -23,30 +23,60 @@ function scoreIncome(answers) {
   else if (income > 0) score += 5;
 
   switch (answers.incomeConsistency) {
-    case 'very_consistent': score += 25; break;
-    case 'mostly_consistent': score += 18; break;
-    case 'variable': score += 10; break;
-    case 'highly_unpredictable': score += 3; break;
+    case 'very_consistent':
+      score += 25;
+      break;
+    case 'mostly_consistent':
+      score += 18;
+      break;
+    case 'variable':
+      score += 10;
+      break;
+    case 'highly_unpredictable':
+      score += 3;
+      break;
   }
 
   switch (answers.incomeSources) {
-    case 'three_or_more': score += 15; break;
-    case 'two': score += 10; break;
-    case 'one': score += 5; break;
+    case 'three_or_more':
+      score += 15;
+      break;
+    case 'two':
+      score += 10;
+      break;
+    case 'one':
+      score += 5;
+      break;
   }
 
   switch (answers.incomeGrowth) {
-    case 'increased_significantly': score += 15; break;
-    case 'increased_moderately': score += 10; break;
-    case 'stable': score += 7; break;
-    case 'decreased': score += 2; break;
+    case 'increased_significantly':
+      score += 15;
+      break;
+    case 'increased_moderately':
+      score += 10;
+      break;
+    case 'stable':
+      score += 7;
+      break;
+    case 'decreased':
+      score += 2;
+      break;
   }
 
   switch (answers.incomeGrowthPotential) {
-    case 'high': score += 15; break;
-    case 'moderate': score += 10; break;
-    case 'limited': score += 5; break;
-    case 'none': score += 0; break;
+    case 'high':
+      score += 15;
+      break;
+    case 'moderate':
+      score += 10;
+      break;
+    case 'limited':
+      score += 5;
+      break;
+    case 'none':
+      score += 0;
+      break;
   }
 
   return clamp(Math.round(score));
@@ -56,41 +86,81 @@ function scoreSpending(answers) {
   let score = 0;
 
   switch (answers.spendingAwareness) {
-    case 'track_everything': score += 30; break;
-    case 'good_general_idea': score += 22; break;
-    case 'not_really_sure': score += 10; break;
-    case 'no_idea': score += 0; break;
+    case 'track_everything':
+      score += 30;
+      break;
+    case 'good_general_idea':
+      score += 22;
+      break;
+    case 'not_really_sure':
+      score += 10;
+      break;
+    case 'no_idea':
+      score += 0;
+      break;
   }
 
   switch (answers.spendingTracking) {
-    case 'yes_consistently': score += 20; break;
-    case 'occasionally': score += 10; break;
-    case 'no': score += 0; break;
+    case 'yes_consistently':
+      score += 20;
+      break;
+    case 'occasionally':
+      score += 10;
+      break;
+    case 'no':
+      score += 0;
+      break;
   }
 
   switch (answers.overspendingFrequency) {
-    case 'rarely': score += 20; break;
-    case 'sometimes': score += 12; break;
-    case 'often': score += 5; break;
-    case 'almost_always': score += 0; break;
+    case 'rarely':
+      score += 20;
+      break;
+    case 'sometimes':
+      score += 12;
+      break;
+    case 'often':
+      score += 5;
+      break;
+    case 'almost_always':
+      score += 0;
+      break;
   }
 
   switch (answers.moneyLeaks) {
-    case 'none': score += 15; break;
-    case 'a_few': score += 10; break;
-    case 'several': score += 5; break;
-    case 'a_lot': score += 0; break;
+    case 'none':
+      score += 15;
+      break;
+    case 'a_few':
+      score += 10;
+      break;
+    case 'several':
+      score += 5;
+      break;
+    case 'a_lot':
+      score += 0;
+      break;
   }
 
   switch (answers.lifestyleInflation) {
-    case 'save_or_invest_most': score += 10; break;
-    case 'split_it': score += 6; break;
-    case 'spend_most': score += 0; break;
+    case 'save_or_invest_most':
+      score += 10;
+      break;
+    case 'split_it':
+      score += 6;
+      break;
+    case 'spend_most':
+      score += 0;
+      break;
   }
 
   switch (answers.threeMonthReview) {
-    case 'yes': score += 5; break;
-    case 'no': score += 0; break;
+    case 'yes':
+      score += 5;
+      break;
+    case 'no':
+      score += 0;
+      break;
   }
 
   return clamp(Math.round(score));
@@ -100,39 +170,81 @@ function scoreSaving(answers) {
   let score = 0;
 
   switch (answers.totalLiquidSavings) {
-    case '100000_plus': score += 30; break;
-    case '50000_100000': score += 26; break;
-    case '30000_50000': score += 22; break;
-    case '15000_30000': score += 18; break;
-    case '5000_15000': score += 12; break;
-    case '1000_5000': score += 6; break;
-    case 'under_1000': score += 2; break;
+    case '100000_plus':
+      score += 30;
+      break;
+    case '50000_100000':
+      score += 26;
+      break;
+    case '30000_50000':
+      score += 22;
+      break;
+    case '15000_30000':
+      score += 18;
+      break;
+    case '5000_15000':
+      score += 12;
+      break;
+    case '1000_5000':
+      score += 6;
+      break;
+    case 'under_1000':
+      score += 2;
+      break;
   }
 
   switch (answers.emergencyAccess) {
-    case 'all': score += 20; break;
-    case 'most': score += 15; break;
-    case 'some': score += 8; break;
-    case 'very_little': score += 2; break;
+    case 'all':
+      score += 20;
+      break;
+    case 'most':
+      score += 15;
+      break;
+    case 'some':
+      score += 8;
+      break;
+    case 'very_little':
+      score += 2;
+      break;
   }
 
   switch (answers.savingConsistency) {
-    case 'yes_consistently': score += 20; break;
-    case 'yes_irregularly': score += 10; break;
-    case 'not_currently': score += 0; break;
+    case 'yes_consistently':
+      score += 20;
+      break;
+    case 'yes_irregularly':
+      score += 10;
+      break;
+    case 'not_currently':
+      score += 0;
+      break;
   }
 
   switch (answers.savingsAutomation) {
-    case 'fully_automated': score += 15; break;
-    case 'partially_automated': score += 10; break;
-    case 'manual': score += 5; break;
-    case 'not_saving': score += 0; break;
+    case 'fully_automated':
+      score += 15;
+      break;
+    case 'partially_automated':
+      score += 10;
+      break;
+    case 'manual':
+      score += 5;
+      break;
+    case 'not_saving':
+      score += 0;
+      break;
   }
 
   switch (answers.savingsConfidence) {
-    case 'very_confident': score += 15; break;
-    case 'somewhat_confident': score += 10; break;
-    case 'not_confident': score += 3; break;
+    case 'very_confident':
+      score += 15;
+      break;
+    case 'somewhat_confident':
+      score += 10;
+      break;
+    case 'not_confident':
+      score += 3;
+      break;
   }
 
   return clamp(Math.round(score));
@@ -142,16 +254,30 @@ function scoreInvesting(answers) {
   let score = 0;
 
   switch (answers.investingStatus) {
-    case 'yes_consistently': score += 30; break;
-    case 'yes_irregularly': score += 18; break;
-    case 'not_yet': score += 0; break;
+    case 'yes_consistently':
+      score += 30;
+      break;
+    case 'yes_irregularly':
+      score += 18;
+      break;
+    case 'not_yet':
+      score += 0;
+      break;
   }
 
   switch (answers.employerMatch) {
-    case 'maximizing_match': score += 20; break;
-    case 'have_match_not_maxing': score += 10; break;
-    case 'have_match_not_contributing': score += 2; break;
-    case 'no_match_or_no_access': score += 5; break;
+    case 'maximizing_match':
+      score += 20;
+      break;
+    case 'have_match_not_maxing':
+      score += 10;
+      break;
+    case 'have_match_not_contributing':
+      score += 2;
+      break;
+    case 'no_match_or_no_access':
+      score += 5;
+      break;
   }
 
   const accounts = answers.investmentAccounts || [];
@@ -163,19 +289,39 @@ function scoreInvesting(answers) {
   }
 
   switch (answers.investmentConfidence) {
-    case 'very_confident': score += 15; break;
-    case 'somewhat_confident': score += 10; break;
-    case 'not_confident': score += 3; break;
+    case 'very_confident':
+      score += 15;
+      break;
+    case 'somewhat_confident':
+      score += 10;
+      break;
+    case 'not_confident':
+      score += 3;
+      break;
   }
 
   switch (answers.totalInvestments) {
-    case '500000_plus': score += 15; break;
-    case '250000_500000': score += 13; break;
-    case '100000_250000': score += 10; break;
-    case '50000_100000': score += 8; break;
-    case '10000_50000': score += 5; break;
-    case '1000_10000': score += 3; break;
-    case 'under_1000': score += 1; break;
+    case '500000_plus':
+      score += 15;
+      break;
+    case '250000_500000':
+      score += 13;
+      break;
+    case '100000_250000':
+      score += 10;
+      break;
+    case '50000_100000':
+      score += 8;
+      break;
+    case '10000_50000':
+      score += 5;
+      break;
+    case '1000_10000':
+      score += 3;
+      break;
+    case 'under_1000':
+      score += 1;
+      break;
   }
 
   return clamp(Math.round(score));
@@ -185,10 +331,18 @@ function scoreDebt(answers) {
   let score = 100;
 
   switch (answers.debtManageability) {
-    case 'very_manageable': score -= 0; break;
-    case 'comfortable': score -= 10; break;
-    case 'tight': score -= 25; break;
-    case 'struggling': score -= 40; break;
+    case 'very_manageable':
+      score -= 0;
+      break;
+    case 'comfortable':
+      score -= 10;
+      break;
+    case 'tight':
+      score -= 25;
+      break;
+    case 'struggling':
+      score -= 40;
+      break;
   }
 
   const debtTypes = answers.debtTypes || [];
@@ -203,19 +357,42 @@ function scoreDebt(answers) {
   }
 
   switch (answers.creditCardBehavior) {
-    case 'never_pay_in_full': score -= 0; break;
-    case 'sometimes': score -= 8; break;
-    case 'usually': score -= 15; break;
-    case 'always_carry_balance': score -= 25; break;
+    case 'never_pay_in_full':
+      score -= 0;
+      break;
+    case 'sometimes':
+      score -= 8;
+      break;
+    case 'usually':
+      score -= 15;
+      break;
+    case 'always_carry_balance':
+      score -= 25;
+      break;
   }
 
   switch (answers.monthlyDebtPayments) {
-    case 'none': score -= 0; break;
-    case 'under_250': score -= 4; break;
-    case '250_500': score -= 8; break;
-    case '500_1000': score -= 15; break;
-    case '1000_2000': score -= 22; break;
-    case '2000_plus': score -= 30; break;
+    case 'none':
+      score -= 0;
+      break;
+    case 'under_250':
+      score -= 4;
+      break;
+    case '250_500':
+      score -= 8;
+      break;
+    case '500_1000':
+      score -= 15;
+      break;
+    case '1000_2000':
+      score -= 22;
+      break;
+    case '2000_plus':
+      score -= 30;
+      break;
+    case 'manageable':
+      score -= 8;
+      break;
   }
 
   return clamp(Math.round(score));
@@ -225,11 +402,24 @@ function scoreProtection(answers) {
   let score = 0;
 
   switch (answers.incomeInterruptionCoverage) {
-    case '6_plus_months': score += 30; break;
-    case '3_6_months': score += 22; break;
-    case '1_3_months': score += 12; break;
-    case 'under_1_month': score += 4; break;
-    case 'not_sure': score += 2; break;
+    case '6_plus_months':
+      score += 30;
+      break;
+    case '3_6_months':
+      score += 22;
+      break;
+    case '1_3_months':
+      score += 12;
+      break;
+    case 'under_1_month':
+      score += 4;
+      break;
+    case 'not_sure':
+      score += 2;
+      break;
+    case 'none':
+      score += 0;
+      break;
   }
 
   switch (answers.healthInsurance) {
@@ -237,42 +427,92 @@ function scoreProtection(answers) {
     case 'private':
     case 'government':
     case 'through_spouse':
+    case 'excellent':
       score += 20;
       break;
     case 'no_coverage':
+    case 'none':
       score += 0;
       break;
   }
 
   switch (answers.incomeProtection) {
-    case 'well_covered': score += 20; break;
-    case 'some_coverage': score += 12; break;
-    case 'rely_on_savings': score += 6; break;
-    case 'not_protected': score += 0; break;
+    case 'well_covered':
+      score += 20;
+      break;
+    case 'some_coverage':
+      score += 12;
+      break;
+    case 'rely_on_savings':
+      score += 6;
+      break;
+    case 'not_protected':
+      score += 0;
+      break;
+    case 'full_coverage':
+      score += 20;
+      break;
+    case 'none':
+      score += 0;
+      break;
   }
 
   if (answers.dependents === 'yes') {
     switch (answers.lifeInsurance) {
-      case 'adequate': score += 15; break;
-      case 'some': score += 8; break;
-      case 'none': score += 0; break;
+      case 'adequate':
+        score += 15;
+        break;
+      case 'some':
+        score += 8;
+        break;
+      case 'none':
+        score += 0;
+        break;
+      case 'fully_covered':
+        score += 15;
+        break;
     }
   } else {
     score += 15;
   }
 
   switch (answers.propertyCoverage) {
-    case 'appropriate_coverage': score += 10; break;
-    case 'some_coverage': score += 6; break;
-    case 'no_coverage': score += 0; break;
-    case 'not_applicable': score += 6; break;
+    case 'appropriate_coverage':
+      score += 10;
+      break;
+    case 'some_coverage':
+      score += 6;
+      break;
+    case 'no_coverage':
+      score += 0;
+      break;
+    case 'not_applicable':
+      score += 6;
+      break;
+    case 'well_protected':
+      score += 10;
+      break;
+    case 'underinsured':
+      score += 2;
+      break;
   }
 
   switch (answers.autoCoverage) {
-    case 'full': score += 5; break;
-    case 'basic': score += 3; break;
-    case 'minimal': score += 1; break;
-    case 'do_not_drive': score += 5; break;
+    case 'full':
+      score += 5;
+      break;
+    case 'basic':
+      score += 3;
+      break;
+    case 'minimal':
+      score += 1;
+      break;
+    case 'do_not_drive':
+      score += 5;
+      break;
+    case 'minimum':
+      score += 1;
+      break;
   }
 
   return clamp(Math.round(score));
@@ -282,17 +522,42 @@ function scoreVision(answers) {
   let score = 0;
 
   switch (answers.financialDirection) {
-    case 'clear_plan': score += 30; break;
-    case 'goals_no_plan': score += 18; break;
-    case 'figuring_it_out': score += 10; break;
-    case 'stuck': score += 2; break;
+    case 'clear_plan':
+      score += 30;
+      break;
+    case 'goals_no_plan':
+      score += 18;
+      break;
+    case 'figuring_it_out':
+      score += 10;
+      break;
+    case 'stuck':
+      score += 2;
+      break;
+    case 'no_goals':
+      score += 0;
+      break;
   }
 
   switch (answers.financialTimeHorizon) {
-    case '5_10_years': score += 20; break;
-    case '10_20_years': score += 18; break;
-    case '20_plus_years': score += 12; break;
-    case 'not_sure': score += 3; break;
+    case '5_10_years':
+      score += 20;
+      break;
+    case '10_20_years':
+      score += 18;
+      break;
+    case '20_plus_years':
+      score += 12;
+      break;
+    case 'not_sure':
+      score += 3;
+      break;
+    case 'long_term':
+      score += 20;
+      break;
+    case 'short_term':
+      score += 5;
+      break;
   }
 
   switch (answers.primaryFinancialPriority) {
@@ -303,13 +568,27 @@ function scoreVision(answers) {
     case 'maintain_optimize':
       score += 20;
       break;
+    case 'wealth_building':
+      score += 20;
+      break;
+    case 'survival':
+      score += 5;
+      break;
   }
 
   switch (answers.financialConfidence) {
-    case 'very_confident': score += 20; break;
-    case 'somewhat_confident': score += 12; break;
-    case 'uncertain': score += 6; break;
-    case 'not_confident': score += 0; break;
+    case 'very_confident':
+      score += 20;
+      break;
+    case 'somewhat_confident':
+      score += 12;
+      break;
+    case 'uncertain':
+      score += 6;
+      break;
+    case 'not_confident':
+      score += 0;
+      break;
   }
 
   switch (answers.lifeGoal) {
@@ -322,22 +601,40 @@ function scoreVision(answers) {
     case 'not_sure_yet':
       score += 2;
       break;
+    case 'financial_freedom':
+      score += 10;
+      break;
+    case 'just_get_by':
+      score += 0;
+      break;
   }
 
   return clamp(Math.round(score));
 }
 
 function calculateFoundationScore(pillars) {
-  const weightedTotal =
+  let foundationScore = Math.round(
     pillars.income * WEIGHTS.income +
     pillars.spending * WEIGHTS.spending +
     pillars.saving * WEIGHTS.saving +
     pillars.investing * WEIGHTS.investing +
     pillars.debt * WEIGHTS.debt +
     pillars.protection * WEIGHTS.protection +
-    pillars.vision * WEIGHTS.vision;
+    pillars.vision * WEIGHTS.vision
+  );
 
-  return Math.round(weightedTotal / 100);
+  const pillarValues = Object.values(pillars);
+  const lowestPillar = Math.min(...pillarValues);
+
+  if (lowestPillar < 20) {
+    foundationScore = Math.min(foundationScore, 59);
+  } else if (lowestPillar < 30) {
+    foundationScore = Math.min(foundationScore, 69);
+  } else if (lowestPillar < 40) {
+    foundationScore = Math.min(foundationScore, 79);
+  }
+
+  return clamp(foundationScore);
 }
 
 function getScoreBand(score) {
@@ -375,27 +672,21 @@ function getTopFocusAreas(pillars) {
   if (pillars.debt < 60) {
     focusAreas.push('Reduce debt pressure to free up cash flow and flexibility.');
   }
-
   if (pillars.spending < 60) {
     focusAreas.push('Improve spending clarity and reduce money leaks.');
   }
-
   if (pillars.saving < 60) {
     focusAreas.push('Build a stronger savings habit and emergency buffer.');
   }
-
   if (pillars.investing < 60) {
     focusAreas.push('Strengthen long-term investing consistency.');
   }
-
   if (pillars.protection < 60) {
     focusAreas.push('Close protection gaps before they become financial setbacks.');
   }
-
   if (pillars.income < 60) {
     focusAreas.push('Increase income stability and growth capacity.');
   }
-
   if (pillars.vision < 60) {
     focusAreas.push('Clarify your financial direction so your decisions support a real destination.');
   }
