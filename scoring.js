@@ -687,7 +687,12 @@ function getStrengths(pillars) {
   };
 
   return Object.entries(pillars)
-    .filter(([, score]) => score >= 70)
+    .filter(([key, score]) => {
+      // 🔴 EXCLUDE debt unless VERY strong
+      if (key === 'debt') return score >= 90;
+
+      return score >= 70;
+    })
     .sort((a, b) => b[1] - a[1])
     .slice(0, 3)
     .map(([key, score]) => ({
