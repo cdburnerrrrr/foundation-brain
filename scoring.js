@@ -330,47 +330,44 @@ function scoreInvesting(answers) {
 function scoreDebt(answers) {
   let score = 100;
 
-  switch (answers.debtManageability) {
-    case 'very_manageable':
-      score -= 0;
-      break;
-    case 'comfortable':
-      score -= 10;
-      break;
-    case 'tight':
-      score -= 25;
-      break;
-    case 'struggling':
-      score -= 40;
-      break;
+  const debtTypes = Array.isArray(answers.debtTypes) ? answers.debtTypes : [];
+
+  if (debtTypes.length === 0 || (debtTypes.length === 1 && debtTypes.includes('none'))) {
+    return 100;
   }
 
-  const debtTypes = answers.debtTypes || [];
-  if (Array.isArray(debtTypes)) {
-    if (debtTypes.includes('credit_cards')) score -= 20;
-    if (debtTypes.includes('bnpl')) score -= 12;
-    if (debtTypes.includes('personal_loan')) score -= 10;
-    if (debtTypes.includes('student_loans')) score -= 8;
-    if (debtTypes.includes('car_loan')) score -= 10;
-    if (debtTypes.includes('car_lease')) score -= 12;
-    if (debtTypes.includes('mortgage')) score -= 5;
-  }
+  // Type-based penalties
+  if (debtTypes.includes('credit_cards')) score -= 25;
+  if (debtTypes.includes('bnpl')) score -= 15;
+  if (debtTypes.includes('personal_loan')) score -= 12;
+  if (debtTypes.includes('student_loans')) score -= 10;
+  if (debtTypes.includes('car_loan')) score -= 12;
+  if (debtTypes.includes('car_lease')) score -= 15;
+  if (debtTypes.includes('mortgage')) score -= 6;
+  if (debtTypes.includes('other')) score -= 10;
 
+  // Number of debt types matters
+  if (debtTypes.length >= 4) score -= 15;
+  else if (debtTypes.length === 3) score -= 10;
+  else if (debtTypes.length === 2) score -= 5;
+
+  // Carrying credit card balances is a major drag
   switch (answers.creditCardBehavior) {
-    case 'never_pay_in_full':
-      score -= 0;
-      break;
-    case 'sometimes':
-      score -= 8;
-      break;
-    case 'usually':
-      score -= 15;
-      break;
     case 'always_carry_balance':
       score -= 25;
       break;
+    case 'usually':
+      score -= 18;
+      break;
+    case 'sometimes':
+      score -= 10;
+      break;
+    case 'never_pay_in_full':
+      score -= 0;
+      break;
   }
 
+  // Total monthly burden
   switch (answers.monthlyDebtPayments) {
     case 'none':
       score -= 0;
@@ -385,13 +382,38 @@ function scoreDebt(answers) {
       score -= 15;
       break;
     case '1000_2000':
-      score -= 22;
+      score -= 24;
       break;
     case '2000_plus':
-      score -= 30;
+      score -= 35;
       break;
     case 'manageable':
+      score -= 10;
+      break;
+  }
+
+  // How the debt feels
+  switch (answers.debtManageability) {
+    case 'very_manageable':
+      score -= 0;
+      break;
+    case 'comfortable':
       score -= 8;
+      break;
+    case 'manageable':
+      score -= 12;
+      break;
+    case 'tight':
+      score -= 25;
+      break;
+    case 'struggling':
+      score -= 40;
+      break;
+    case 'overwhelming':
+      score -= 50;
+      break;
+    case 'very_comfortable':
+      score -= 0;
       break;
   }
 
@@ -537,6 +559,9 @@ function scoreVision(answers) {
     case 'no_goals':
       score += 0;
       break;
+    case 'somewhat_clear':
+      score += 15;
+      break;
   }
 
   switch (answers.financialTimeHorizon) {
@@ -574,6 +599,9 @@ function scoreVision(answers) {
     case 'survival':
       score += 5;
       break;
+    case 'reduce_debt':
+      score += 18;
+      break;
   }
 
   switch (answers.financialConfidence) {
@@ -606,6 +634,9 @@ function scoreVision(answers) {
       break;
     case 'just_get_by':
       score += 0;
+      break;
+    case 'financial_stability':
+      score += 8;
       break;
   }
 
@@ -656,7 +687,7 @@ function getStrengths(pillars) {
   };
 
   return Object.entries(pillars)
-    .filter(([, score]) => score >= 75)
+    .filter(([, score]) => score >= 70)
     .sort((a, b) => b[1] - a[1])
     .slice(0, 3)
     .map(([key, score]) => ({
@@ -709,8 +740,8 @@ function getInsights(pillars, answers) {
     insights.push('Your biggest near-term opportunity may be clarity. A 3-month spending review could quickly uncover hidden leaks.');
   }
 
-  if (pillars.income >= 65 && pillars.investing < 60) {
-    insights.push('Your income foundation is reasonably solid, which means stronger investing habits could meaningfully accelerate wealth building.');
+  if (pillars.income >= 60 && pillars.investing < 60) {
+    insights.push('You have a workable income base, but it is not being converted into long-term wealth as effectively as it could be.');
   }
 
   if (pillars.vision >= 70) {
@@ -718,7 +749,15 @@ function getInsights(pillars, answers) {
   }
 
   if (pillars.debt < 55 && pillars.saving < 60) {
-    insights.push('Debt and low savings together are putting pressure on your foundation. Strengthening either one will help, but improving both will change everything.');
+    insights.push('Debt and low savings together are putting pressure on your foundation. Strengthening both will noticeably improve your financial resilience.');
+  }
+
+  if (pillars.protection >= 70 && pillars.income >= 60) {
+    insights.push('You have built a meaningful layer of stability through income and protection, which gives you something solid to build on.');
+  }
+
+  if (pillars.vision < 50) {
+    insights.push('Your financial decisions may feel scattered because the long-term destination is not fully defined yet.');
   }
 
   return insights.slice(0, 3);
