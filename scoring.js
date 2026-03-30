@@ -336,7 +336,6 @@ function scoreDebt(answers) {
     return 100;
   }
 
-  // Type-based penalties
   if (debtTypes.includes('credit_cards')) score -= 25;
   if (debtTypes.includes('bnpl')) score -= 15;
   if (debtTypes.includes('personal_loan')) score -= 12;
@@ -346,12 +345,10 @@ function scoreDebt(answers) {
   if (debtTypes.includes('mortgage')) score -= 6;
   if (debtTypes.includes('other')) score -= 10;
 
-  // Number of debt types matters
   if (debtTypes.length >= 4) score -= 15;
   else if (debtTypes.length === 3) score -= 10;
   else if (debtTypes.length === 2) score -= 5;
 
-  // Carrying credit card balances is a major drag
   switch (answers.creditCardBehavior) {
     case 'always_carry_balance':
       score -= 25;
@@ -367,7 +364,6 @@ function scoreDebt(answers) {
       break;
   }
 
-  // Total monthly burden
   switch (answers.monthlyDebtPayments) {
     case 'none':
       score -= 0;
@@ -392,7 +388,6 @@ function scoreDebt(answers) {
       break;
   }
 
-  // How the debt feels
   switch (answers.debtManageability) {
     case 'very_manageable':
       score -= 0;
@@ -688,9 +683,7 @@ function getStrengths(pillars) {
 
   return Object.entries(pillars)
     .filter(([key, score]) => {
-      // 🔴 EXCLUDE debt unless VERY strong
       if (key === 'debt') return score >= 90;
-
       return score >= 70;
     })
     .sort((a, b) => b[1] - a[1])
@@ -703,66 +696,56 @@ function getStrengths(pillars) {
 }
 
 function getTopFocusAreas(pillars) {
-  const focusAreas = [];
+  const candidates = [
+    { key: 'debt', score: pillars.debt, text: 'Reduce debt pressure to free up cash flow and flexibility.' },
+    { key: 'spending', score: pillars.spending, text: 'Improve spending clarity and reduce money leaks.' },
+    { key: 'saving', score: pillars.saving, text: 'Build a stronger savings habit and emergency buffer.' },
+    { key: 'investing', score: pillars.investing, text: 'Strengthen long-term investing consistency.' },
+    { key: 'protection', score: pillars.protection, text: 'Close protection gaps before they become financial setbacks.' },
+    { key: 'income', score: pillars.income, text: 'Increase income stability and growth capacity.' },
+    { key: 'vision', score: pillars.vision, text: 'Clarify your financial direction so your decisions support a real destination.' }
+  ];
 
-  if (pillars.debt < 60) {
-    focusAreas.push('Reduce debt pressure to free up cash flow and flexibility.');
-  }
-  if (pillars.spending < 60) {
-    focusAreas.push('Improve spending clarity and reduce money leaks.');
-  }
-  if (pillars.saving < 60) {
-    focusAreas.push('Build a stronger savings habit and emergency buffer.');
-  }
-  if (pillars.investing < 60) {
-    focusAreas.push('Strengthen long-term investing consistency.');
-  }
-  if (pillars.protection < 60) {
-    focusAreas.push('Close protection gaps before they become financial setbacks.');
-  }
-  if (pillars.income < 60) {
-    focusAreas.push('Increase income stability and growth capacity.');
-  }
-  if (pillars.vision < 60) {
-    focusAreas.push('Clarify your financial direction so your decisions support a real destination.');
-  }
-
-  return focusAreas.slice(0, 3);
+  return candidates
+    .filter(item => item.score < 60)
+    .sort((a, b) => a.score - b.score)
+    .slice(0, 3)
+    .map(item => item.text);
 }
 
 function getInsights(pillars, answers) {
   const insights = [];
 
-  if (pillars.investing >= 70 && pillars.debt < 60) {
-    insights.push('You are making progress on investing, but debt is still reducing your financial flexibility.');
-  }
-
-  if (pillars.saving >= 70 && pillars.protection >= 70) {
-    insights.push('Your savings and protection habits are creating real financial stability.');
+  if (pillars.income >= 60 && pillars.investing < 60) {
+    insights.push('You have a workable income base, but it is not being converted into long-term wealth as effectively as it could be.');
   }
 
   if (pillars.spending < 60 && answers.threeMonthReview === 'no') {
     insights.push('Your biggest near-term opportunity may be clarity. A 3-month spending review could quickly uncover hidden leaks.');
   }
 
-  if (pillars.income >= 60 && pillars.investing < 60) {
-    insights.push('You have a workable income base, but it is not being converted into long-term wealth as effectively as it could be.');
-  }
-
-  if (pillars.vision >= 70) {
-    insights.push('You have a clearer sense of direction than most people. The opportunity now is making sure the lower blocks fully support it.');
-  }
-
-  if (pillars.debt < 55 && pillars.saving < 60) {
-    insights.push('Debt and low savings together are putting pressure on your foundation. Strengthening both will noticeably improve your financial resilience.');
+  if (pillars.saving < 50 && pillars.investing < 50) {
+    insights.push('Right now, the biggest drag on your progress is not income alone — it is the lack of consistent saving and investing habits.');
   }
 
   if (pillars.protection >= 70 && pillars.income >= 60) {
     insights.push('You have built a meaningful layer of stability through income and protection, which gives you something solid to build on.');
   }
 
+  if (pillars.vision >= 70) {
+    insights.push('You have a clearer sense of direction than most people. The opportunity now is making sure the lower blocks fully support it.');
+  }
+
   if (pillars.vision < 50) {
     insights.push('Your financial decisions may feel scattered because the long-term destination is not fully defined yet.');
+  }
+
+  if (pillars.debt < 55 && pillars.saving < 60) {
+    insights.push('Debt and low savings together are putting pressure on your foundation. Strengthening both will noticeably improve your financial resilience.');
+  }
+
+  if (pillars.debt >= 70 && pillars.investing < 50) {
+    insights.push('Your debt is not the biggest emergency right now, but your long-term progress is being limited by what is not yet being built on top of your current foundation.');
   }
 
   return insights.slice(0, 3);
@@ -783,7 +766,7 @@ function buildSummary(foundationScore, scoreBand, pillars) {
     vision: 'vision'
   };
 
-  return `Your Foundation Score is ${foundationScore}, which puts you in the "${scoreBand}" range. Your strongest area right now is ${labels[strongest]}, while your biggest opportunity is ${labels[weakest]}. Improving your weakest block first will give you the fastest lift to your overall foundation.`;
+  return `Your Foundation Score is ${foundationScore}, which puts you in the "${scoreBand}" range. You have some solid pieces in place, but your weakest area right now is ${labels[weakest]}, while your strongest area is ${labels[strongest]}. Strengthening the weakest block first will give you the fastest lift to your overall foundation.`;
 }
 
 function buildNextStep(pillars, answers) {
